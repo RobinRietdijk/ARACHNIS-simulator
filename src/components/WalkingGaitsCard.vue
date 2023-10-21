@@ -8,6 +8,7 @@
                         <v-btn
                             variant="plain"
                             size="small"
+                            color="error"
                         >
                             RESET
                         </v-btn>

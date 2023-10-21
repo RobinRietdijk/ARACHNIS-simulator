@@ -1,6 +1,14 @@
 <template>
     <v-container class="pt-0 pl-2">
         <v-row class="flex-nowrap">
+            <v-col class="link-btn pr-1">
+                <v-btn 
+                    density="comfortable"
+                    icon="mdi-theme-light-dark"
+                    color="primary"
+                    @click="switchTheme"
+                />
+            </v-col>
             <v-col class="link-btn">
                 <v-btn 
                     density="comfortable"
@@ -17,7 +25,9 @@
                 <v-btn
                     density="comfortable"
                     :icon="link.icon"
+                    :active="this.active === link.name"
                     color="secondary"
+                    @click="setActive(link)"
                 />
             </v-col>
             <v-col />
@@ -26,31 +36,48 @@
 </template>
 
 <script>
+import { useTheme } from 'vuetify';
 export default {
     data: () => ({
+        active: "",
         links: [
             {
-                name: "inverse",
+                name: "inverseKinematics",
                 icon: "mdi-undo",
-                to: ""
             },
             {
-                name: "forward",
+                name: "forwardKinematics",
                 icon: "mdi-redo",
-                to: ""
             },
             {
-                name: "patterns",
+                name: "legPatterns",
                 icon: "mdi-lock-pattern",
-                to: ""
             },
             {
-                name: "walking",
+                name: "walkingGaits",
                 icon: "mdi-play",
-                to: ""
             },
         ]
-    })
+    }),
+    methods: {
+        setActive(o) {
+            this.active = o.name
+            this.$emit('setActive', o.name)
+        },
+        switchTheme() {
+            this.theme.global.name.value = this.theme.global.current.value.dark ? 'light' : 'dark'
+        }
+    },
+    mounted() {
+        this.active = this.links[0].name
+        this.$emit('setActive', this.active)
+    },
+    setup() {
+        const theme = useTheme()
+        return {
+            theme
+        }
+    }
 }
 </script>
 
