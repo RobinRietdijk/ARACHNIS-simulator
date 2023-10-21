@@ -8,6 +8,7 @@
                         <v-btn
                             variant="plain"
                             size="small"
+                            color="error"
                         >
                             RESET
                         </v-btn>
@@ -28,6 +29,7 @@
                             :label="field.name"
                             density="compact"
                             variant="outlined"
+                            color="secondary"
                             :rules="[rules.isNum, rules.notEmpty]"
                         />
                     </v-col>

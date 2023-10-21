@@ -1,17 +1,26 @@
 <template>
-    <v-container>
+    <v-container class="pt-0 pl-2">
         <v-row class="flex-nowrap">
+            <v-col class="link-btn">
+                <v-btn 
+                    density="comfortable"
+                    icon="mdi-home"
+                    color="primary"
+                />
+            </v-col>
+            <v-divider vertical inset />
             <v-col
                 v-for="link in links"
                 :key="link.name"
+                class="link-btn pr-1"
             >
                 <v-btn
                     density="comfortable"
                     :icon="link.icon"
-                    color="purple"
+                    color="secondary"
                 />
             </v-col>
-            <v-col cols="5" />
+            <v-col />
         </v-row>
     </v-container>
 </template>
@@ -20,11 +29,6 @@
 export default {
     data: () => ({
         links: [
-            {
-                name: "home",
-                icon: "mdi-home",
-                to: ""
-            },
             {
                 name: "inverse",
                 icon: "mdi-undo",
@@ -49,3 +53,9 @@ export default {
     })
 }
 </script>
+
+<style scoped>
+.link-btn {
+    flex: 0 0 0
+}
+</style>
