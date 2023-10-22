@@ -1,5 +1,5 @@
 <template>
     <v-card>
-        <v-card-text>DATA</v-card-text>
+        <v-card-title>DATA</v-card-title>
     </v-card>
 </template>
