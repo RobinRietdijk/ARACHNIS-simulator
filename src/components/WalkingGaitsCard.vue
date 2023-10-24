@@ -5,64 +5,34 @@
                 <v-row class="py-1">
                     <v-col class="pa-0">WALKING GAITS</v-col>
                     <v-col class="pa-0 reset-btn" justify-end>
-                        <v-btn
-                            variant="plain"
-                            size="small"
-                            color="error"
-                        >
+                        <v-btn variant="plain" size="small" color="error">
                             RESET
                         </v-btn>
                     </v-col>
                 </v-row>
-            </v-container>            
+            </v-container>
         </v-card-title>
         <v-card-text class="pb-0">
             <v-container>
                 <v-row>
                     <v-col>
-                        <v-switch 
-                            v-model="isRunning"
-                            :label="isRunning ? 'Running' : 'Paused'"
-                            density="compact"
-                            loading="white"
-                            color="primary"
-                            hide-details
-                        />
-                        <v-switch 
-                            v-model="isBackwards"
-                            :label="`isBackwards: ${isBackwards.toString()}`"
-                            density="compact"
-                            hide-details
-                        />
-                        <v-switch 
-                            v-model="isRotating"
-                            :label="`isRotating: ${isRotating.toString()}`"
-                            density="compact"
-                            hide-details
-                        />
+                        <v-switch v-model="isRunning" :label="isRunning ? 'Running' : 'Paused'" density="compact"
+                            loading="white" color="primary" hide-details />
+                        <v-switch v-model="isBackwards" :label="`isBackwards: ${isBackwards.toString()}`" density="compact"
+                            hide-details />
+                        <v-switch v-model="isRotating" :label="`isRotating: ${isRotating.toString()}`" density="compact"
+                            hide-details />
                     </v-col>
                     <v-col>
                         <v-select></v-select>
                     </v-col>
                 </v-row>
-                <v-row
-                    v-for="slider_row in sliders"
-                    :key="slider_row"
-                >
-                    <v-col
-                        class="pa-0"
-                        v-for="slider in slider_row"
-                        :key="slider.name"
-                    >
+                <v-row v-for="slider_row in sliders" :key="slider_row">
+                    <v-col class="pa-0" v-for="slider in slider_row" :key="slider.name">
                         <span class="pl-5 slider-caption"><b>{{ slider.name + ": " }}</b></span>
                         <span class="slider-caption">{{ slider.value }}</span>
-                        <v-slider
-                            v-model="slider.value"
-                            :step="slider.step"
-                            :min="slider.min"
-                            :max="slider.max"
-                            hide-details
-                        ></v-slider>
+                        <v-slider v-model="slider.value" :step="slider.step" :min="slider.min" :max="slider.max"
+                            hide-details></v-slider>
                     </v-col>
                 </v-row>
             </v-container>

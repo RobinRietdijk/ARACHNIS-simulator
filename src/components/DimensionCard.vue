@@ -5,33 +5,19 @@
                 <v-row class="py-1">
                     <v-col class="pa-0">DIMENSIONS</v-col>
                     <v-col class="pa-0 reset-btn" justify-end>
-                        <v-btn
-                            variant="plain"
-                            size="small"
-                            color="error"
-                        >
+                        <v-btn variant="plain" size="small" color="error">
                             RESET
                         </v-btn>
                     </v-col>
                 </v-row>
-            </v-container>            
+            </v-container>
         </v-card-title>
         <v-card-text class="pb-0">
             <v-container>
                 <v-row>
-                    <v-col
-                        v-for="field in fields"
-                        :key=field.name 
-                        class="py-0"
-                    >
-                        <v-text-field 
-                            v-model="field.value"
-                            :label="field.name"
-                            density="compact"
-                            variant="outlined"
-                            color="secondary"
-                            :rules="[rules.isNum, rules.notEmpty]"
-                        />
+                    <v-col v-for="field in fields" :key=field.name class="py-0">
+                        <v-text-field v-model="field.value" :label="field.name" density="compact" variant="outlined"
+                            color="secondary" :rules="[rules.isNum, rules.notEmpty]" />
                     </v-col>
                 </v-row>
             </v-container>
@@ -44,23 +30,23 @@ export default {
     data: () => ({
         fields: [
             {
-                name:"Front",
+                name: "Front",
                 value: 100,
             },
             {
-                name:"Sides",
+                name: "Sides",
                 value: 100,
             },
             {
-                name:"Coxia",
+                name: "Coxia",
                 value: 100,
             },
             {
-                name:"Femur",
+                name: "Femur",
                 value: 100,
             },
             {
-                name:"Tibia",
+                name: "Tibia",
                 value: 100,
             }
         ],
