@@ -1,50 +1,30 @@
 <template>
-    <VuePlotly :data="data" :layout="layout" :display-mode-bar="false" />
+  <VuePlotly
+    :data="[polygon.get3DMesh(), polygon.get3DScatter()]"
+    :layout="layout"
+    :display-mode-bar="false"
+  />
 </template>
 
 <script>
-import { VuePlotly } from 'vue3-plotly'
+import { VuePlotly } from "vue3-plotly";
+import Polygon from "./Geometry/Polygon";
 
 export default {
-    components: {
-        VuePlotly
+  components: {
+    VuePlotly,
+  },
+  data: () => ({
+    polygon: new Polygon(8, 100, 100),
+    layout: {
+      height: 700,
     },
-    data: () => ({
-        data: [],
-        layout: {
-            height: 700
-        }
-    }),
-    mounted() {
-        var a = [];
-        var b = [];
-        var c = [];
-        for (var i = 0; i < 50; i++) {
-            var a_ = Math.random();
-            a.push(a_);
-
-            var b_ = Math.random();
-            b.push(b_);
-
-            var c_ = Math.random();
-            c.push(c_);
-        }
-        this.data = [
-            {
-                opacity: 0.8,
-                color: 'rgb(300,100,200)',
-                type: 'mesh3d',
-                x: a,
-                y: b,
-                z: c,
-            }
-        ];
-    }
-}
+  }),
+};
 </script>
 
 <style>
 .main-svg {
-    border-radius: 8px;
+  border-radius: 8px;
 }
 </style>
