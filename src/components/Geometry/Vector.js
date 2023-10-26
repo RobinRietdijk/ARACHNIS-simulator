@@ -6,9 +6,9 @@ class Vector {
     }
 
     scale(d) {
-        this.x = d * this.x;
-        this.y = d * this.y;
-        this.z = d * this.z;
+        this.x = d * this.x
+        this.y = d * this.y
+        this.z = d * this.z
     }
 
     add(v) {
