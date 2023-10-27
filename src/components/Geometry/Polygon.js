@@ -1,5 +1,5 @@
 import { toRadians } from "./util";
-import Vector from "./Vector";
+import Vector from "./Vector3D";
 
 class Polygon {
     constructor(vertices, edge_length, height = 0) {

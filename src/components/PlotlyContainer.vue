@@ -15,7 +15,7 @@ export default {
     VuePlotly,
   },
   data: () => ({
-    polygon: new Polygon(8, 100, 100),
+    polygon: new Polygon(10, 100, 100),
     layout: {
       height: 700,
     },
