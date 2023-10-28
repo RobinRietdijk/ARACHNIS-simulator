@@ -29,7 +29,14 @@ export default {
     const forwardKinematics = useForwardKinematicsStore();
     const legPatterns = useLegPatternsStore();
     const walkingGaits = useWalkingGaitsStore();
+
+    let active = appState.active_tab;
+    appState.$subscribe((mutation, state) => {
+      active = state.active_tab;
+    })
+
     return {
+      active,
       appState,
       inverseKinematics,
       forwardKinematics,

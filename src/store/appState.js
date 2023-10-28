@@ -2,14 +2,14 @@ import { defineStore } from 'pinia'
 
 export const useAppStateStore = defineStore('app', {
   state: () => ({
-    theme: true,
+    dark: true,
     active_tab: 0
   }),
   getters : {
   },
   actions : {
     toggleTheme() {
-      this.theme = !this.theme;
+      this.dark = !this.dark;
     },
     setActiveTab(id) {
       this.active_tab = id;

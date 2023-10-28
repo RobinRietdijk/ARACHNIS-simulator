@@ -10,7 +10,7 @@ const appState = useAppStateStore();
 const theme = useTheme();
 
 appState.$subscribe((mutation, state) => {
-  theme.global.name.value = state.theme ? 'dark' : 'light'
+  theme.global.name.value = state.dark ? 'dark' : 'light'
 })
 </script>
 
