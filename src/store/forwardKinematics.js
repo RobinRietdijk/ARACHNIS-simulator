@@ -5,7 +5,7 @@ export const useForwardKinematicsStore = defineStore('forwardKinematics', {
     id: 1,
     name: 'forwardKinematics',
     segments: 2,
-    segment_length: 10,
+    segment_count: 10,
   }),
   getters : {
   },
