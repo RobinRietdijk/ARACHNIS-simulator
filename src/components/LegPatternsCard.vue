@@ -17,42 +17,21 @@
         </v-card-title>
         <v-card-text class="pb-0">
             <v-container>
-                <v-row v-for="slider in sliders" :key="slider">
-                    <v-col class="pa-0">
-                        <span class="pl-5 slider-caption"><b>{{ slider.name + ": " }}</b></span>
-                        <span class="slider-caption">{{ slider.value }}</span>
-                        <v-slider v-model="slider.value" step="0.01" :min="slider.min" :max="slider.max"></v-slider>
-                    </v-col>
-                </v-row>
+                
             </v-container>
         </v-card-text>
     </v-card>
 </template>
 
 <script>
+import { useLegPatternsStore } from '@/store/legPatterns';
 export default {
-    data: () => ({
-        sliders: [
-            {
-                name: "alpha",
-                value: 0,
-                min: -180,
-                max: 180,
-            },
-            {
-                name: "beta",
-                value: 0,
-                min: -180,
-                max: 180,
-            },
-            {
-                name: "gamma",
-                value: 0,
-                min: -180,
-                max: 180,
-            }
-        ]
-    })
+    setup() {
+        const legPatterns = useLegPatternsStore()
+        return {
+            legPatterns
+        }
+    }
 }
 </script>
 

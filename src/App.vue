@@ -3,7 +3,15 @@
 </template>
 
 <script setup>
-  //
+import { useTheme } from 'vuetify';
+import { useAppStateStore } from './store/appState';
+
+const appState = useAppStateStore();
+const theme = useTheme();
+
+appState.$subscribe((mutation, state) => {
+  theme.global.name.value = state.theme ? 'dark' : 'light'
+})
 </script>
 
 <style>

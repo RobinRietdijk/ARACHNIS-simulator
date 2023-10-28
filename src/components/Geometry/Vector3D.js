@@ -36,28 +36,6 @@ class Vector3D {
         return this.add(new Vector3D(tx, ty, tz));
     }
 
-    rotateX(rx) {
-        rMatrix = [
-            [1, 0, 0],
-            [0, Math.cos(rx), -1 * Math.sin(rx)],
-            [0, Math.sin(rx), Math.cos(x)],
-        ]
-
-        return;
-    }
-
-    rotateY(ry) {
-        return;
-    }
-
-    rotateZ(rz) {
-        return;
-    }
-
-    rotate(rx, ry, rz) {
-        return;
-    }
-
     scale(sx, sy, sz) {
         return this.multiply(new Vector3D(sx, sy, sz));
     }

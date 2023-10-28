@@ -1,6 +1,6 @@
 <template>
   <VuePlotly
-    :data="[polygon.get3DMesh(), polygon.get3DScatter()]"
+    :data="[]"
     :layout="layout"
     :display-mode-bar="false"
   />
@@ -8,18 +8,35 @@
 
 <script>
 import { VuePlotly } from "vue3-plotly";
-import Polygon from "./Geometry/Polygon";
+import { useAppStateStore } from "@/store/appState";
+import { useInverseKinematicsStore } from "@/store/inverseKinematics";
+import { useForwardKinematicsStore } from "@/store/forwardKinematics";
+import { useLegPatternsStore } from "@/store/legPatterns";
+import { useWalkingGaitsStore } from "@/store/walkingGaits";
 
 export default {
   components: {
     VuePlotly,
   },
   data: () => ({
-    polygon: new Polygon(10, 100, 100),
     layout: {
       height: 700,
     },
   }),
+  setup() {
+    const appState = useAppStateStore();
+    const inverseKinematics = useInverseKinematicsStore();
+    const forwardKinematics = useForwardKinematicsStore();
+    const legPatterns = useLegPatternsStore();
+    const walkingGaits = useWalkingGaitsStore();
+    return {
+      appState,
+      inverseKinematics,
+      forwardKinematics,
+      legPatterns,
+      walkingGaits,
+    }
+  }
 };
 </script>
 

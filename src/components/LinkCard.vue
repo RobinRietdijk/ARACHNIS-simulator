@@ -2,15 +2,15 @@
     <v-container class="pt-0 pl-2">
         <v-row class="flex-nowrap">
             <v-col class="link-btn pr-1">
-                <v-btn density="comfortable" icon="mdi-theme-light-dark" color="primary" @click="switchTheme" />
+                <v-btn density="comfortable" icon="mdi-theme-light-dark" color="primary" @click="appState.toggleTheme()" />
             </v-col>
             <v-col class="link-btn">
                 <v-btn density="comfortable" icon="mdi-home" color="primary" />
             </v-col>
             <v-divider vertical inset />
-            <v-col v-for="link in links" :key="link.name" class="link-btn pr-1">
-                <v-btn density="comfortable" :icon="link.icon" :active="this.active === link.name" color="secondary"
-                    @click="setActive(link)" />
+            <v-col v-for="link in links" :key="link.id" class="link-btn pr-1">
+                <v-btn density="comfortable" :icon="link.icon" :active="appState.active_tab === link.id" color="secondary"
+                    @click="appState.setActiveTab(link.id)" />
             </v-col>
             <v-col />
         </v-row>
@@ -18,46 +18,36 @@
 </template>
 
 <script>
-import { useTheme } from 'vuetify';
+import { useAppStateStore } from '@/store/appState';
 export default {
     data: () => ({
-        active: "",
         links: [
             {
+                id: 0,
                 name: "inverseKinematics",
                 icon: "mdi-undo",
             },
             {
+                id: 1,
                 name: "forwardKinematics",
                 icon: "mdi-redo",
             },
             {
+                id: 2,
                 name: "legPatterns",
                 icon: "mdi-lock-pattern",
             },
             {
+                id: 3,
                 name: "walkingGaits",
                 icon: "mdi-play",
             },
         ]
     }),
-    methods: {
-        setActive(o) {
-            this.active = o.name
-            this.$emit('setActive', o.name)
-        },
-        switchTheme() {
-            this.theme.global.name.value = this.theme.global.current.value.dark ? 'light' : 'dark'
-        }
-    },
-    mounted() {
-        this.active = this.links[0].name
-        this.$emit('setActive', this.active)
-    },
     setup() {
-        const theme = useTheme()
+        const appState = useAppStateStore();
         return {
-            theme
+            appState
         }
     }
 }
