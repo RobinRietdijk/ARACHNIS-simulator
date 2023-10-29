@@ -1,6 +1,6 @@
 <template>
   <VuePlotly
-    :data="[]"
+    :data="[plots[active].getPlot()]"
     :layout="layout"
     :display-mode-bar="false"
   />
@@ -13,6 +13,7 @@ import { useInverseKinematicsStore } from "@/store/inverseKinematics";
 import { useForwardKinematicsStore } from "@/store/forwardKinematics";
 import { useLegPatternsStore } from "@/store/legPatterns";
 import { useWalkingGaitsStore } from "@/store/walkingGaits";
+import KinematicsPlot from "@/components/Geometry/KinematicsPlot"
 
 export default {
   components: {
@@ -30,18 +31,38 @@ export default {
     const legPatterns = useLegPatternsStore();
     const walkingGaits = useWalkingGaitsStore();
 
+    const inverseKinematicsPlot = new KinematicsPlot(inverseKinematics.id, inverseKinematics.segments, inverseKinematics.segment_length, "Inverse Kinematics");
+    const forwardKinematicsPlot = new KinematicsPlot(forwardKinematics.id, forwardKinematics.segments, forwardKinematics.segment_length, "Forward Kinematics");
+    //const legPatternsPlot = new Plot();
+    //const walkingGaitsPlot = new Plot();
+    const plots = {}
+    plots[inverseKinematicsPlot.id] = inverseKinematicsPlot
+    plots[forwardKinematicsPlot.id] = forwardKinematicsPlot
     let active = appState.active_tab;
     appState.$subscribe((mutation, state) => {
       active = state.active_tab;
-    })
+    });
+    
+    inverseKinematics.$subscribe((mutation, state) => {
+    });
+
+    forwardKinematics.$subscribe((mutation, state) => {
+    });
+
+    legPatterns.$subscribe((mutation, state) => {
+    });
+
+    walkingGaits.$subscribe((mutation, state) => {
+    });
 
     return {
       active,
+      plots,
       appState,
       inverseKinematics,
       forwardKinematics,
       legPatterns,
-      walkingGaits,
+      walkingGaits
     }
   }
 };
