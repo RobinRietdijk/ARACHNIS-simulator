@@ -1,10 +1,10 @@
-import Vector3D from "./Vector3D";
+import Segment from "./Segment";
 
 class KinematicsPlot {
-    constructor(id, n_segments, segments_length, name="unnamed-plot", showLegend=true, opacity=1.0, color="#FF06B5") {
+    constructor(id, n_segments, segment_length, name="unnamed-plot", showLegend=true, opacity=1.0, color="#FF06B5") {
         this.id = id
         this.n_segments = n_segments;
-        this.segments_length = segments_length;
+        this.segment_length = segment_length;
 
         this.name = name;
         this.showLegend = showLegend;
@@ -12,18 +12,17 @@ class KinematicsPlot {
         this.opacity = opacity;
         this.color = color;
 
-        this.vertices = [];
-        this.vertices[0] = new Vector3D(0, 0, 0)
-        for (let i = 1; i <= this.n_segments; i++) {
-            this.vertices[i] = new Vector3D(0, 0, segments_length * i);
+        this.segments = [Segment.Root(0, 0, 0, this.segment_length)]
+        for (let i = 1; i < this.n_segments; i++) {
+            this.segments[i] = Segment.Child(this.segments[i - 1], this.segment_length);
         }
     }
 
     setSegments(n) { 
-        if (this.n_segments !== n) this.n_segments = n 
+        this.n_segments = n;
     }
     setSegmentLength(l) {
-        if (this.segments_length !== l) this.segments_length = l 
+        this.segment_length = l 
     }
 
     getPlot() {
@@ -33,9 +32,9 @@ class KinematicsPlot {
             type: this.type,
             opacity: this.opacity,
             color: this.color,
-            x: this.vertices.map(v => v.x),
-            y: this.vertices.map(v => v.y),
-            z: this.vertices.map(v => v.z),
+            x: this.segments.map(s => s.a.x),
+            y: this.segments.map(s => s.a.y),
+            z: this.segments.map(s => s.a.z),
         }]
     }
 }
