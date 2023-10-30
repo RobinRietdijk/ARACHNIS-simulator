@@ -27,7 +27,7 @@ class KinematicsPlot {
     }
 
     getPlot() {
-        return {
+        return [{
             name: this.name,
             showLegend: this.showLegend,
             type: this.type,
@@ -36,7 +36,7 @@ class KinematicsPlot {
             x: this.vertices.map(v => v.x),
             y: this.vertices.map(v => v.y),
             z: this.vertices.map(v => v.z),
-        }
+        }]
     }
 }
 

@@ -1,6 +1,6 @@
 <template>
   <VuePlotly
-    :data="[plots[active].getPlot()]"
+    :data="plots[active].getPlot()"
     :layout="layout"
     :display-mode-bar="false"
   />
