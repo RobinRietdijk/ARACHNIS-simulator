@@ -1,6 +1,6 @@
 <template>
   <VuePlotly
-    :data="plots[active].getPlot()"
+    :data="plotData"
     :layout="layout"
     :display-mode-bar="false"
   />
@@ -14,6 +14,7 @@ import { useForwardKinematicsStore } from "@/store/forwardKinematics";
 import { useLegPatternsStore } from "@/store/legPatterns";
 import { useWalkingGaitsStore } from "@/store/walkingGaits";
 import KinematicsPlot from "@/components/Geometry/KinematicsPlot"
+import Vector3D from './Geometry/Vector3D';
 
 export default {
   components: {
@@ -31,13 +32,19 @@ export default {
     const legPatterns = useLegPatternsStore();
     const walkingGaits = useWalkingGaitsStore();
 
-    const inverseKinematicsPlot = new KinematicsPlot(inverseKinematics.id, inverseKinematics.segments, inverseKinematics.segment_length, "Inverse Kinematics");
-    const forwardKinematicsPlot = new KinematicsPlot(forwardKinematics.id, forwardKinematics.segments, forwardKinematics.segment_length, "Forward Kinematics");
+    const inverseKinematicsPlot = new KinematicsPlot(inverseKinematics.id, [10, 10, 10], [new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1)], "Inverse Kinematics");
+    //const forwardKinematicsPlot = new KinematicsPlot(forwardKinematics.id, forwardKinematics.segments, forwardKinematics.segment_length, "Forward Kinematics");
     //const legPatternsPlot = new Plot();
     //const walkingGaitsPlot = new Plot();
+
+    const temp = inverseKinematicsPlot.getPlot()
+    const plotData = temp.data;
+    const plotLayout = temp.layout;
+
+
     const plots = {}
     plots[inverseKinematicsPlot.id] = inverseKinematicsPlot
-    plots[forwardKinematicsPlot.id] = forwardKinematicsPlot
+    //plots[forwardKinematicsPlot.id] = forwardKinematicsPlot
     let active = appState.active_tab;
     appState.$subscribe((mutation, state) => {
       active = state.active_tab;
@@ -58,6 +65,8 @@ export default {
     return {
       active,
       plots,
+      plotData,
+      plotLayout,
       appState,
       inverseKinematics,
       forwardKinematics,
