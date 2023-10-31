@@ -32,15 +32,10 @@ export default {
     const legPatterns = useLegPatternsStore();
     const walkingGaits = useWalkingGaitsStore();
 
-    const inverseKinematicsPlot = new KinematicsPlot(inverseKinematics.id, [10, 10, 10], [new Vector3D(1, 0, 0), new Vector3D(0, 1, 0), new Vector3D(0, 0, 1)], "Inverse Kinematics");
+    const inverseKinematicsPlot = new KinematicsPlot(inverseKinematics.id, inverseKinematics.segments);
     //const forwardKinematicsPlot = new KinematicsPlot(forwardKinematics.id, forwardKinematics.segments, forwardKinematics.segment_length, "Forward Kinematics");
     //const legPatternsPlot = new Plot();
     //const walkingGaitsPlot = new Plot();
-
-    const temp = inverseKinematicsPlot.getPlot()
-    const plotData = temp.data;
-    const plotLayout = temp.layout;
-
 
     const plots = {}
     plots[inverseKinematicsPlot.id] = inverseKinematicsPlot
@@ -49,8 +44,12 @@ export default {
     appState.$subscribe((mutation, state) => {
       active = state.active_tab;
     });
+    let plotData = plots[active].getPlot()
     
     inverseKinematics.$subscribe((mutation, state) => {
+      if (active === inverseKinematicsPlot.id) {
+        plotData = inverseKinematicsPlot.getPlot();
+      }
     });
 
     forwardKinematics.$subscribe((mutation, state) => {
@@ -64,9 +63,7 @@ export default {
 
     return {
       active,
-      plots,
       plotData,
-      plotLayout,
       appState,
       inverseKinematics,
       forwardKinematics,

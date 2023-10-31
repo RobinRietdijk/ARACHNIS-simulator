@@ -1,3 +1,4 @@
+import { Quaternion } from "three";
 import { toRadians } from "./util";
 
 class Vector3D {
@@ -8,11 +9,31 @@ class Vector3D {
         this.name = name;
     }
 
+    add(b) { 
+        this.x += b.x;
+        this.y += b.y;
+        this.z += b.z;
+        return this;
+    }
 
-    add(b) { return new Vector3D(this.x + b.x, this.y + b.y, this.z + b.z); }
-    subtract(b) { return new Vector3D(this.x - b.x, this.y - b.y, this.z - b.z); }
-    multiply(d) { return new Vector3D(this.x * d, this.y * d, this.z * d); }
-    dot(v) { return this.x * v.x + this.y * v.y + this.z * v.z; }
+    subtract(b) { 
+        this.x -= b.x;
+        this.y -= b.y;
+        this.z -= b.z;
+        return this;
+    }
+
+    multiplyScalar(d) { 
+        this.x *= d;
+        this.y *= d;
+        this.z *= d;
+        return this;
+    }
+
+    dot(v) { 
+        return this.x * v.x + this.y * v.y + this.z * v.z; 
+    }
+
     cross(b) {
         const x = this.y * b.z - this.z * b.y;
         const y = this.z * b.x - this.x * b.z;
@@ -20,40 +41,26 @@ class Vector3D {
         return new Vector3D(x, y, z);
     }
 
-    length() { return Math.sqrt(this.dot(this)); }
-    getUnitVector() { 
+    length() { 
+        return Math.sqrt(this.x ** 2, this.y ** 2, this.z ** 2); 
+    }
+
+    normalize() { 
         const length = this.length();
         if (length === 0) {
-            return new Vector3D(0, 0, 0);
+            this.x /= length;
+            this.y /= length;
+            this.z /= length;
         }
-        return this.multiply(1 / this.length()); 
+        return this; 
     }
 
-    rotateX(d) {
-        const radians = toRadians(d);
-        const cos = Math.cos(radians);
-        const sin = Math.sin(radians);
-        const y = this.y * cos - this.z * sin;
-        const z = this.y * sin + this.z * cos;
-        return new Vector3D(this.x, y, z);
-    }
-    rotateY(d) {
-        const radians = toRadians(d);
-        const cos = Math.cos(radians);
-        const sin = Math.sin(radians);
-        const x = this.x * cos + this.z * sin;
-        const z = -this.x * sin + this.z * cos;
-        return new Vector3D(x, this.y, z);
-
-    }
-    rotateZ(d) {
-        const radians = toRadians(d);
-        const cos = Math.cos(radians);
-        const sin = Math.sin(radians);
-        const x = this.x * cos - this.y * sin;
-        const y = this.x * sin + this.y * cos;
-        return new Vector3D(x, y, this.z);
-
+    applyQuaternion(q) {
+        const rotatedQuaternion = q.multiply(new Quaternion(0, this.x, this.y, this.z)).multiply(q.conjugate());
+        this.x = rotatedQuaternion.x;
+        this.y = rotatedQuaternion.y;
+        this.z = rotatedQuaternion.z;
+        return this;
     }
 
     getTo(v) { return new Vector3D(v.x - this.x, v.y - this.y, v.z, this.z); }
@@ -66,7 +73,18 @@ class Vector3D {
     }
 
     clone() {
-        return new Vector3D(this.x, this.y, this.z);
+        return new Vector3D(this.x, this.y, this.z, this.name);
+    }
+
+    toString() {
+        return `Vector3D(${this.x}, ${this.y}, ${this.z})`;
+    }
+
+    static fromSphericalCoordinates(r, a, e) {
+        const x = r * Math.sin(e) * Math.cos(a);
+        const y = r * Math.sin(e) * Math.sin(a);
+        const z = r * Math.cos(e);
+        return new Vector3D(x, y, z);
     }
 }
 

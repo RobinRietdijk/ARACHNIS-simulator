@@ -3,43 +3,27 @@ import Vector3D from "./Vector3D";
 import { toRadians } from "./util";
 
 class Segment {
-    constructor(length, axis, angle = 0, min_angle = 0, max_angle = 180) {
+    constructor(id, origin, axis, length, range=[0, 180]) {
+        this.id = id;
+        this.origin = origin;
+        this.axis = axis.normalize();
         this.length = length;
-        this.axis = axis.getUnitVector();
-        this.angle = angle;
-        this.min_angle = min_angle;
-        this.max_angle = max_angle;
+        this.range = range;
+        this.angle = 0;
+        this.rQuaternion = new Quaternion();
     }
 
-    setAngle(a) {
-        if (a < this.min_angle) {
-            this.angle = this.min_angle;
-        } else if (a > this.max_angle) {
-            this.angle = this.max_angle;
-        } else {
-            this.angle = a;
-        }
+    rotate(a) {
+        this.angle += a;
+        this.angle = Math.max(this.range[0], Math.min(this.range[1], this.angle));
+        const rotation = Quaternion.fromAxisAngle(this.axis, this.angle);
+        this.rQuaternion = this.rQuaternion.multiply(rotation);
     }
 
-    getOrientationQuaternion() {
-        const radians = toRadians(this.angle);
-        const halfAngle = radians / 2;
-        const s = Math.sin(halfAngle);
-        const c = Math.cos(halfAngle);
-
-        const x = this.axis.x * s;
-        const y = this.axis.y * s;
-        const z = this.axis.z * s;
-        const w = c;
-
-        return new Quaternion(x, y, z, w);
-    }
-
-    calculateEndEffectorPosition() {
-        const orientation = this.getOrientationQuaternion();
-        const relativePosition = new Vector3D(this.length, 0, 0);
-        const rotatedPosition = orientation.rotateVector(relativePosition);
-        return rotatedPosition;
+    getEndPoint() {
+        const rotatedAxis = this.axis.clone().applyQuaternion(this.rQuaternion).normalize();
+        const scaledAxis = rotatedAxis.clone().multiplyScalar(this.length);
+        return this.origin.clone().add(scaledAxis);
     }
 }
 

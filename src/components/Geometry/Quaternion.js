@@ -9,19 +9,12 @@ class Quaternion {
     }
 
     normalize() {
-        const norm = Math.sqrt(this.w * this.w + this.x * this.x + this.y * this.y + this.z * this.z);
-        this.w /= norm;
-        this.x /= norm;
-        this.y /= norm;
-        this.z /= norm;
-        return this;
+        const length = Math.sqrt(this.w ** 2 + this.x ** 2 + this.y ** 2 + this.z ** 2);
+        return new Quaternion(this.w / length, this.x / length, this.y / length, this.z / length);
     }
 
     conjugate() {
-        this.x = -this.x;
-        this.y = -this.y;
-        this.z = -this.z;
-        return this;
+        return new Quaternion(this.w, -this.x, -this.y, -this.z);
     }
 
     multiply(other) {
@@ -32,15 +25,19 @@ class Quaternion {
         return new Quaternion(w, x, y, z);
     }
 
-    rotateVector(vector) {
-        const p = new Quaternion(0, vector.x, vector.y, vector.z);
-        const qConjugate = this.clone().conjugate();
-        const rotated = this.multiply(p).multiply(qConjugate);
-        return new Vector3D(rotated.x, rotated.y, rotated.z);
-    }
-
     clone() {
         return new Quaternion(this.w, this.x, this.y, this.z);
+    }
+
+    static fromAxisAngle(axis, angle) {
+        const halfAngle = angle / 2;
+        const sinHalfAngle = Math.sin(halfAngle);
+        const cosHalfAngle = Math.cos(halfAngle);
+        const x = axis.x * sinHalfAngle;
+        const y = axis.y * sinHalfAngle;
+        const z = axis.z * sinHalfAngle;
+        const w = cosHalfAngle;
+        return new Quaternion(w, x, y, z);
     }
 }
 
