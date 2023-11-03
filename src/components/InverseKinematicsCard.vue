@@ -52,24 +52,15 @@
                 </v-row>
                 <v-divider />
                 <v-container class="overflow-y-scroll mh-500">
-                    <v-row 
+                    <v-card 
                         v-for="segment in segments"
                         :key="segment"
                     >
-                        <v-col cols="1">
-                            <div>{{ segment.id }}:</div>
-                        </v-col>
-                        <v-col>
+                        <v-card-title cols="1">
+                            <div>Segment: {{ segment.id }}:</div>
+                        </v-card-title>
+                        <v-text>
                             <v-row>
-                                <v-col class="pa-0" cols="3">
-                                    <v-select 
-                                        v-model="segment.axis"
-                                        density="compact"
-                                        persistent-hint
-                                        :items="axes"
-                                        :hint="`${axis.title}, ${axis.hint}`"
-                                    />
-                                </v-col>
                                 <v-col class="pa-0">
                                     <v-slider
                                         v-model="segment.len"
@@ -96,9 +87,14 @@
                                         strict
                                     />
                                 </v-col>
-                            </v-row>    
-                        </v-col>
-                    </v-row>
+                            </v-row>
+                        </v-text>
+                        <v-card-actions>
+                            <v-btn size="small" :color="segment.axis.name === 'x' ? 'primary' : undefined" :active="segment.axis.name === 'x'" variant="text" icon="mdi-axis-x-arrow" @click="setAxis(segment.id, 'x')"/>
+                            <v-btn size="small" :color="segment.axis.name === 'y' ? 'primary' : undefined" :active="segment.axis.name === 'y'" variant="text" icon="mdi-axis-y-arrow" @click="setAxis(segment.id, 'y')"/>
+                            <v-btn size="small" :color="segment.axis.name === 'z' ? 'primary' : undefined" :active="segment.axis.name === 'z'" variant="text" icon="mdi-axis-z-arrow" @click="setAxis(segment.id, 'z')"/>
+                        </v-card-actions>
+                    </v-card>
                 </v-container>  
             </v-container>
         </v-card-text>
@@ -108,33 +104,11 @@
 <script>
 import { useInverseKinematicsStore } from '@/store/inverseKinematics';
 import { storeToRefs } from 'pinia';
-import Vector3D from './Geometry/Vector3D';
+import Axis from './Geometry/Axis';
 export default {
     data: () => ({
         min_segments: 1,
         max_segments: 10,
-        axis: {
-            title: "",
-            value: "",
-            hint: ""
-        },
-        axes: [
-            {
-                title: "(1, 0, 0)",
-                value: new Vector3D(1, 0, 0),
-                hint: "x-axis"
-            },
-            {
-                title: "(0, 1, 0)",
-                value: new Vector3D(0, 1, 0),
-                hint: "y-axis"
-            },
-            {
-                title: "(0, 0, 1)",
-                value: new Vector3D(0, 0, 1),
-                hint: "z-axis"
-            },
-        ]
     }),
     methods: {
         updateSegments(val) {
@@ -149,6 +123,10 @@ export default {
         decrement_segments() {
             this.n_segments--;
             this.updateSegments(this.n_segments);
+        },
+
+        setAxis(i, a) {
+            this.segments[i].axis = new Axis(a);
         }
     },
     setup() {

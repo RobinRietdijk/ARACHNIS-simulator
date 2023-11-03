@@ -1,4 +1,4 @@
-import Vector3D from '@/components/Geometry/Vector3D';
+import Axis from '@/components/Geometry/Axis';
 import { defineStore } from 'pinia'
 
 export const useInverseKinematicsStore = defineStore('inverseKinematics', {
@@ -9,12 +9,12 @@ export const useInverseKinematicsStore = defineStore('inverseKinematics', {
     segments: [{
       id: 0,
       len: 10,
-      axis: new Vector3D(1, 0, 0),
+      axis: new Axis('x'),
       range: [0, 180]
     }, {
-      id: 0,
+      id: 1,
       len: 10,
-      axis: new Vector3D(1, 0, 0),
+      axis: new Axis('x'),
       range: [0, 180]
     }],
   }),
@@ -28,7 +28,7 @@ export const useInverseKinematicsStore = defineStore('inverseKinematics', {
           this.segments.push({
             id: old + i,
             len: 10,
-            axis: new Vector3D(1, 0, 0),
+            axis: new Axis('x'),
             range: [0, 180]
           })
         }

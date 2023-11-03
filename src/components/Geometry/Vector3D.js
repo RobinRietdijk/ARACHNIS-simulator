@@ -1,12 +1,10 @@
 import { Quaternion } from "three";
-import { toRadians } from "./util";
 
 class Vector3D {
-    constructor(x, y, z, name = null) {
+    constructor(x, y, z) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.name = name;
     }
 
     add(b) { 
@@ -73,7 +71,7 @@ class Vector3D {
     }
 
     clone() {
-        return new Vector3D(this.x, this.y, this.z, this.name);
+        return new Vector3D(this.x, this.y, this.z);
     }
 
     toString() {

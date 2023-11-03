@@ -1,3 +1,4 @@
+import Axis from "./Axis";
 import Linkage from "./Linkage";
 import Segment from "./Segment";
 import Vector3D from "./Vector3D";
@@ -14,7 +15,7 @@ class KinematicsPlot {
     initLinkage() {
         for (let i = 0; i < this.n_segments; i++) {
             const origin = i === 0 ? new Vector3D(1, 0, 0) : this.linkage[i - 1].getEndPoint();
-            const axis = new Vector3D(1, 0, 0);
+            const axis = new Axis('x');
             const length = 10;
             const range = [0, 180];
             const segment = new Segment(i, origin, axis, length, range);
@@ -33,7 +34,7 @@ class KinematicsPlot {
       } else if (difference > 0) {
         for (let i = old; i < n; i++) {
           const origin = i === 0 ? new Vector3D(1, 0, 0) : this.linkage[i - 1].getEndPoint();
-          const axis = new Vector3D(1, 0, 0);
+          const axis = new Axis('x');
           const length = 10;
           const range = [0, 180];
           const segment = new Segment(i, origin, axis, length, range);
