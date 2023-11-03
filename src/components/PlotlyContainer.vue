@@ -43,24 +43,25 @@ export default {
     let plotData = plots[active].getPlot()
 
     inverseKinematics.$subscribe((mutation, state) => {
+      const target = mutation.events.target.id
+      switch (mutation.events.key) {
+        case "n_segments":
+          break;
+        case "axis":
+          inverseKinematicsPlot.setSegmentAxis(target, state.segments[target].axis);
+          break;
+        case "length":
+          inverseKinematicsPlot.setSegmentLength(target, state.segments[target].length);
+          break;
+        case "range":
+          inverseKinematicsPlot.setSegmentMinAngle(target, state.segments[target].range[0]);
+          inverseKinematicsPlot.setSegmentMaxAngle(target, state.segments[target].range[1]);
+          break;
+        default:
+          break;
+      }
+
       if (active === inverseKinematicsPlot.id) {
-        const target = mutation.events.target.id
-        switch (mutation.events.key) {
-          case "n_segments":
-            break;
-          case "axis":
-            inverseKinematicsPlot.setSegmentAxis(target, state.segments[target].axis);
-            break;
-          case "length":
-            inverseKinematicsPlot.setSegmentLength(target, state.segments[target].length);
-            break;
-          case "range":
-            inverseKinematicsPlot.setSegmentMinAngle(target, state.segments[target].range[0]);
-            inverseKinematicsPlot.setSegmentMaxAngle(target, state.segments[target].range[1]);
-            break;
-          default:
-            break;
-        }
         plotData = inverseKinematicsPlot.getPlot();
       }
     });
