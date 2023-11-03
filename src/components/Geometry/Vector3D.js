@@ -47,7 +47,7 @@ class Vector3D {
 
     normalize() { 
         const length = this.length();
-        if (length === 0) {
+        if (length !== 0) {
             this.x /= length;
             this.y /= length;
             this.z /= length;

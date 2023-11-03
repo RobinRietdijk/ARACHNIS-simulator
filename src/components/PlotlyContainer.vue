@@ -1,9 +1,5 @@
 <template>
-  <VuePlotly
-    :data="plotData"
-    :layout="layout"
-    :display-mode-bar="false"
-  />
+  <VuePlotly :data="plotData" :layout="layout" :display-mode-bar="false" />
 </template>
 
 <script>
@@ -32,7 +28,7 @@ export default {
     const legPatterns = useLegPatternsStore();
     const walkingGaits = useWalkingGaitsStore();
 
-    const inverseKinematicsPlot = new KinematicsPlot(inverseKinematics.id, inverseKinematics.segments);
+    const inverseKinematicsPlot = new KinematicsPlot(inverseKinematics.id, inverseKinematics.n_segments);
     //const forwardKinematicsPlot = new KinematicsPlot(forwardKinematics.id, forwardKinematics.segments, forwardKinematics.segment_length, "Forward Kinematics");
     //const legPatternsPlot = new Plot();
     //const walkingGaitsPlot = new Plot();
@@ -45,8 +41,26 @@ export default {
       active = state.active_tab;
     });
     let plotData = plots[active].getPlot()
-    
+
     inverseKinematics.$subscribe((mutation, state) => {
+      const target = mutation.events.target.id
+      switch (mutation.events.key) {
+        case "n_segments":
+          break;
+        case "axis":
+          inverseKinematicsPlot.setSegmentAxis(target, state.segments[target].axis);
+          break;
+        case "length":
+          inverseKinematicsPlot.setSegmentLength(target, state.segments[target].length);
+          break;
+        case "range":
+          inverseKinematicsPlot.setSegmentMinAngle(target, state.segments[target].range[0]);
+          inverseKinematicsPlot.setSegmentMaxAngle(target, state.segments[target].range[1]);
+          break;
+        default:
+          break;
+      }
+
       if (active === inverseKinematicsPlot.id) {
         plotData = inverseKinematicsPlot.getPlot();
       }
