@@ -1,5 +1,5 @@
 <template>
-  <VuePlotly :data="plotData" :layout="layout" :display-mode-bar="false" />
+  <VuePlotly :data="data" :layout="layout" :display-mode-bar="false" />
 </template>
 
 <script>
@@ -10,17 +10,35 @@ import { useForwardKinematicsStore } from "@/store/forwardKinematics";
 import { useLegPatternsStore } from "@/store/legPatterns";
 import { useWalkingGaitsStore } from "@/store/walkingGaits";
 import KinematicsPlot from "@/components/Geometry/KinematicsPlot"
-import Vector3D from './Geometry/Vector3D';
 
 export default {
   components: {
     VuePlotly,
   },
   data: () => ({
+    data: [],
     layout: {
       height: 700,
     },
   }),
+  watch: {
+    'appState.active_tab': {
+      handler: 'updatePlot',
+      deep: true,
+    },
+    'inverseKinematics': {
+      handler: 'updatePlot',
+      deep: true,
+    }
+  },  
+  mounted() {
+    this.updatePlot()
+  },
+  methods: {
+    updatePlot() {
+      this.data = this.plots[this.appState.active_tab].getPlot();
+    }
+  },
   setup() {
     const appState = useAppStateStore();
     const inverseKinematics = useInverseKinematicsStore();
@@ -29,29 +47,22 @@ export default {
     const walkingGaits = useWalkingGaitsStore();
 
     const inverseKinematicsPlot = new KinematicsPlot(inverseKinematics.id, inverseKinematics.n_segments);
-    //const forwardKinematicsPlot = new KinematicsPlot(forwardKinematics.id, forwardKinematics.segments, forwardKinematics.segment_length, "Forward Kinematics");
+    const forwardKinematicsPlot = new KinematicsPlot(forwardKinematics.id, forwardKinematics.n_segments);
     //const legPatternsPlot = new Plot();
     //const walkingGaitsPlot = new Plot();
 
-    const plots = {}
-    plots[inverseKinematicsPlot.id] = inverseKinematicsPlot
-    //plots[forwardKinematicsPlot.id] = forwardKinematicsPlot
-    let active = appState.active_tab;
-    appState.$subscribe((mutation, state) => {
-      active = state.active_tab;
-    });
-    let plotData = plots[active].getPlot()
+    const plots = {};
+    plots[inverseKinematicsPlot.id] = inverseKinematicsPlot;
+    plots[forwardKinematicsPlot.id] = forwardKinematicsPlot;
 
     inverseKinematics.$subscribe((mutation, state) => {
       const target = mutation.events.target.id
       switch (mutation.events.key) {
-        case "n_segments":
-          break;
         case "axis":
           inverseKinematicsPlot.setSegmentAxis(target, state.segments[target].axis);
           break;
-        case "length":
-          inverseKinematicsPlot.setSegmentLength(target, state.segments[target].length);
+        case "len":
+          inverseKinematicsPlot.setSegmentLength(target, state.segments[target].len);
           break;
         case "range":
           inverseKinematicsPlot.setSegmentMinAngle(target, state.segments[target].range[0]);
@@ -60,11 +71,24 @@ export default {
         default:
           break;
       }
-
-      if (active === inverseKinematicsPlot.id) {
-        plotData = inverseKinematicsPlot.getPlot();
-      }
     });
+    inverseKinematics.$onAction(
+      ({
+        name,
+        store,
+        args,
+        after,
+        onError,
+      }) => {
+        switch (name) {
+          case "set_n_segments":
+            inverseKinematicsPlot.setSegments(args[0]);
+            break;
+          default:
+            break;
+        }
+      }
+    )
 
     forwardKinematics.$subscribe((mutation, state) => {
     });
@@ -76,9 +100,8 @@ export default {
     });
 
     return {
-      active,
-      plotData,
       appState,
+      plots,
       inverseKinematics,
       forwardKinematics,
       legPatterns,

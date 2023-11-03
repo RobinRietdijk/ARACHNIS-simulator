@@ -72,7 +72,7 @@
                                 </v-col>
                                 <v-col class="pa-0">
                                     <v-slider
-                                        v-model="segment.length"
+                                        v-model="segment.len"
                                         :min="0"
                                         :max="50"
                                         :step="1"
@@ -154,7 +154,6 @@ export default {
     setup() {
         const inverseKinematics = useInverseKinematicsStore();
         const { n_segments, segments } = storeToRefs(inverseKinematics);
-        inverseKinematics.set_n_segments(2);
         return {
             inverseKinematics,
             n_segments,

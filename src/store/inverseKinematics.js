@@ -5,8 +5,18 @@ export const useInverseKinematicsStore = defineStore('inverseKinematics', {
   state: () => ({
     id: 0,
     name: 'inverseKinematics',
-    n_segments: 0,
-    segments: [],
+    n_segments: 2,
+    segments: [{
+      id: 0,
+      len: 10,
+      axis: new Vector3D(1, 0, 0),
+      range: [0, 180]
+    }, {
+      id: 0,
+      len: 10,
+      axis: new Vector3D(1, 0, 0),
+      range: [0, 180]
+    }],
   }),
   getters : {
   },
@@ -17,7 +27,7 @@ export const useInverseKinematicsStore = defineStore('inverseKinematics', {
         for (let i = 0; i < v - old; i++) {
           this.segments.push({
             id: old + i,
-            length: 10,
+            len: 10,
             axis: new Vector3D(1, 0, 0),
             range: [0, 180]
           })

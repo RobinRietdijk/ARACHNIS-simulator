@@ -16,10 +16,33 @@ class KinematicsPlot {
             const origin = i === 0 ? new Vector3D(1, 0, 0) : this.linkage[i - 1].getEndPoint();
             const axis = new Vector3D(1, 0, 0);
             const length = 10;
-            const range = [0, 180]
+            const range = [0, 180];
             const segment = new Segment(i, origin, axis, length, range);
             this.linkage.addSegment(segment);
         }
+    }
+
+    setSegments(n) {
+      const old = this.n_segments;
+      const difference = n - old;
+      if (difference < 0) {
+        const abs = Math.abs(difference);
+        for (let i = 0; i < abs; i++) {
+          this.linkage.pop();
+        }
+      } else if (difference > 0) {
+        for (let i = old; i < n; i++) {
+          const origin = i === 0 ? new Vector3D(1, 0, 0) : this.linkage[i - 1].getEndPoint();
+          const axis = new Vector3D(1, 0, 0);
+          const length = 10;
+          const range = [0, 180];
+          const segment = new Segment(i, origin, axis, length, range);
+          this.linkage.addSegment(segment)
+        }
+      } else {
+        return;
+      }
+      this.n_segments = n;
     }
 
     setSegmentLength(i, l) {
