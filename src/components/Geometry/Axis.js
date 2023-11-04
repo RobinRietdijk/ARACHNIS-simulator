@@ -2,7 +2,6 @@ import Vector3D from "./Vector3D";
 
 class Axis extends Vector3D {
     constructor(name) {
-        console.log(name)
         if (name === 'x') {
             super(1, 0, 0);
         } else if (name === 'y') {

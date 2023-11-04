@@ -1,7 +1,4 @@
 import Quaternion from "./Quaternion";
-import Vector3D from "./Vector3D";
-import { toRadians } from "./util";
-
 class Segment {
     constructor(id, origin, axis, length, range=[0, 180]) {
         this.id = id;
