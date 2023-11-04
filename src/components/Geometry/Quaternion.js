@@ -1,5 +1,3 @@
-import Vector3D from "./Vector3D";
-
 class Quaternion {
     constructor(w = 1, x = 0, y = 0, z = 0) {
         this.w = w;
