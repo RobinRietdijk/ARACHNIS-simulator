@@ -78,6 +78,14 @@ class KinematicsPlot {
     }
   }
 
+  setSegmentColor(i, c) {
+    if (i >= 0 && i < this.linkage.length) {
+      this.linkage[i].color = c;
+    } else {
+      console.error("Invalid segment index");
+    }
+  }
+
   rotateSegment(i, a) {
     this.linkage.rotateSegment(i, a);
   }
@@ -104,6 +112,7 @@ class KinematicsPlot {
         },
         marker: {
           size: 5,
+          color: segment.color,
         },
         name: `Segment ${i + 1}`,
       };

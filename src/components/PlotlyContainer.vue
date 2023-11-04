@@ -68,6 +68,9 @@ export default {
           inverseKinematicsPlot.setSegmentMinAngle(target, state.segments[target].range[0]);
           inverseKinematicsPlot.setSegmentMaxAngle(target, state.segments[target].range[1]);
           break;
+        case "color":
+          inverseKinematicsPlot.setSegmentColor(target, state.segments[target].color);
+          break;
         default:
           break;
       }

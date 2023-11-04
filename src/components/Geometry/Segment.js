@@ -1,12 +1,14 @@
 import Quaternion from "./Quaternion";
+import { defaultSegment } from "./defaultSegment";
 class Segment {
-    constructor(id, origin, axis, length, range=[0, 180]) {
+    constructor(id, origin, axis, length, range=defaultSegment.range, color=defaultSegment.color) {
         this.id = id;
         this.origin = origin;
         this.axis = axis.normalize();
         this.length = length;
         this.range = range;
         this.angle = 0;
+        this.color = color
         this.rQuaternion = new Quaternion();
     }
 

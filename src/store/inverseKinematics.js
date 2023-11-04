@@ -1,4 +1,4 @@
-import Axis from '@/components/Geometry/Axis';
+import { createDefaultSegment } from '@/components/Geometry/defaultSegment';
 import { defineStore } from 'pinia'
 
 export const useInverseKinematicsStore = defineStore('inverseKinematics', {
@@ -6,17 +6,7 @@ export const useInverseKinematicsStore = defineStore('inverseKinematics', {
     id: 0,
     name: 'inverseKinematics',
     n_segments: 2,
-    segments: [{
-      id: 0,
-      len: 10,
-      axis: new Axis('x'),
-      range: [0, 180]
-    }, {
-      id: 1,
-      len: 10,
-      axis: new Axis('x'),
-      range: [0, 180]
-    }],
+    segments: [createDefaultSegment(0), createDefaultSegment(1)],
   }),
   getters : {
   },
@@ -25,12 +15,7 @@ export const useInverseKinematicsStore = defineStore('inverseKinematics', {
       const old = this.segments.length;
       if (old < v) {
         for (let i = 0; i < v - old; i++) {
-          this.segments.push({
-            id: old + i,
-            len: 10,
-            axis: new Axis('x'),
-            range: [0, 180]
-          })
+          this.segments.push(createDefaultSegment(old + i))
         }
       } else if (old > v) {
         for (let i = 0; i < old - v; i++) {

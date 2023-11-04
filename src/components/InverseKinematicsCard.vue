@@ -56,33 +56,17 @@
                     <v-card class="w-100">
                         <v-card-actions class="justify-space-between">
                             <v-btn
+                                :disabled="onboarding < 1"
                                 variant="plain"
                                 icon="mdi-chevron-left"
-                                @click="windowPrev"
+                                @click="onboarding--"
                             ></v-btn>
-                            <v-item-group
-                                v-model="onboarding"
-                                class="text-center"
-                                mandatory
-                            >
-                                <v-item
-                                v-for="n in n_segments"
-                                :key="`btn-${n}`"
-                                v-slot="{ isSelected, toggle }"
-                                :value="n - 1"
-                                >
-                                <v-btn
-                                    :variant="isSelected ? 'outlined' : 'text'"
-                                    icon="mdi-record"
-                                    @click="toggle"
-                                    size="small"
-                                ></v-btn>
-                                </v-item>
-                            </v-item-group>
+                            <v-card-title>Segment: {{ onboarding + 1 }}</v-card-title>
                             <v-btn
+                                :disabled="onboarding >= n_segments - 1"
                                 variant="plain"
                                 icon="mdi-chevron-right"
-                                @click="windowNext"
+                                @click="onboarding++"
                             ></v-btn>
                         </v-card-actions>
                         <v-window
@@ -93,10 +77,7 @@
                                 :key="segment"
                             >
                                 <v-card>
-                                    <v-card-title cols="1">
-                                        <div>Segment: {{ segment.id + 1 }}:</div>
-                                    </v-card-title>
-                                    <v-text>
+                                    <v-card-text>
                                         <v-row>
                                             <v-col class="pa-0">
                                                 <v-slider
@@ -108,23 +89,28 @@
                                                     thumb-size="10"
                                                     show-ticks
                                                 />
+                                                <v-color-picker 
+                                                    v-model="segment.color"
+                                                />
                                             </v-col>
-                                            <round-slider 
-                                                v-model="segment.range"
-                                                sliderType="range"
-                                                min="0"
-                                                max="360"
-                                                step="10"
-                                                radius="75"
-                                                width="8"
-                                                handleSize="24"
-                                                borderWidth="0"
-                                                startAngle="130"
-                                                endAngle="50"
-                                                :rangeColor="$vuetify.theme.current.colors.primary"
-                                            />
+                                            <v-col>
+                                                <round-slider 
+                                                    ref="rslider"
+                                                    v-model="segment.range"
+                                                    sliderType="range"
+                                                    min="0"
+                                                    max="360"
+                                                    step="1"
+                                                    radius="75"
+                                                    width="8"
+                                                    handleSize="24"
+                                                    borderWidth="0"
+                                                    lineCap="round"
+                                                    :rangeColor="$vuetify.theme.current.colors.primary"
+                                                />
+                                            </v-col>
                                         </v-row>
-                                    </v-text>
+                                    </v-card-text>
                                     <v-card-actions>
                                         <v-btn size="small" :color="segment.axis.name === 'x' ? 'primary' : undefined" :active="segment.axis.name === 'x'" variant="text" icon="mdi-axis-x-arrow" @click="setAxis(segment.id, 'x')"/>
                                         <v-btn size="small" :color="segment.axis.name === 'y' ? 'primary' : undefined" :active="segment.axis.name === 'y'" variant="text" icon="mdi-axis-y-arrow" @click="setAxis(segment.id, 'y')"/>
@@ -150,7 +136,7 @@ export default {
         RoundSlider,
     },
     data: () => ({
-        onboarding: 1,
+        onboarding: 0,
         min_segments: 1,
         max_segments: 10,
     }),
