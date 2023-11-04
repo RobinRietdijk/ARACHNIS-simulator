@@ -4,7 +4,7 @@ const defaultSegment = {
     len: 10,
     axis: new Axis('x'),
     range: [0, 180],
-    color: "#ffffff"
+    color: "#DD7805"
 }
 
 const createDefaultSegment = (id) => {
