@@ -7,13 +7,24 @@ const defaultSegment = {
     color: "#DD7805"
 }
 
+const defaultSegmentOptions = {
+    color_menu: false
+}
+
 const createDefaultSegment = (id) => {
     const ds = { ...defaultSegment }
     ds["id"] = id;
     return ds;
 }
 
+const createDefaultSegmentOptions = () => {
+    const ds = { ...defaultSegmentOptions }
+    return ds;
+}
+
 export {
     defaultSegment,
-    createDefaultSegment
+    defaultSegmentOptions,
+    createDefaultSegment,
+    createDefaultSegmentOptions
 }
