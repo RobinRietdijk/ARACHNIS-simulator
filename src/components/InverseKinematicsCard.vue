@@ -24,14 +24,12 @@
                             :step="1"
                             show-ticks="always"
                             thumb-label
-                            @update:model-value="updateSegments($event)"
                         >
                             <template v-slot:prepend>
                                 <v-btn
                                     size="small"
                                     variant="text"
                                     icon="mdi-minus"
-                                    :color="color"
                                     :disabled="n_segments <= min_segments"
                                     @click="decrement_segments"
                                 ></v-btn>
@@ -42,7 +40,6 @@
                                     size="small"
                                     variant="text"
                                     icon="mdi-plus"
-                                    :color="color"
                                     :disabled="n_segments >= max_segments"
                                     @click="increment_segments"
                                 ></v-btn>
@@ -89,9 +86,19 @@
                                                     thumb-size="10"
                                                     show-ticks
                                                 />
-                                                <v-color-picker 
-                                                    v-model="segment.color"
-                                                />
+                                                <v-text-field v-model="segment.color" hide-details class="ma-0 pa-0" solo>
+                                                    <template v-slot:append>
+                                                        <div :style="swatchStyle">
+                                                            <v-menu activator="parent" v-model="segment_options[segment.id].color_menu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
+                                                                <v-card>
+                                                                    <v-card-text>
+                                                                        <v-color-picker v-model="segment.color" flat />
+                                                                    </v-card-text>
+                                                                </v-card>
+                                                            </v-menu>
+                                                        </div>
+                                                    </template>
+                                                </v-text-field>
                                             </v-col>
                                             <v-col>
                                                 <round-slider 
@@ -128,9 +135,11 @@
 
 <script>
 import { useInverseKinematicsStore } from '@/store/inverseKinematics';
-import { storeToRefs } from 'pinia';
+import { createDefaultSegment, createDefaultSegmentOptions } from '@/components/Geometry/defaultSegment'
 import RoundSlider from 'vue-three-round-slider'
-import Axis from './Geometry/Axis';
+import Axis from '@/components/Geometry/Axis';
+import _ from 'lodash';
+
 export default {
     components: {
         RoundSlider,
@@ -139,10 +148,25 @@ export default {
         onboarding: 0,
         min_segments: 1,
         max_segments: 10,
+        n_segments: 0,
+        segments: [],
+        segment_options: []
     }),
     methods: {
-        updateSegments(val) {
-            this.inverseKinematics.set_n_segments(val);
+        updateSegments(v) {
+            const old = this.segments.length;
+            if (old < v) {
+                for (let i = 0; i < v - old; i++) {
+                    this.segments.push(createDefaultSegment(old + i))
+                    this.segment_options.push(createDefaultSegmentOptions())
+                }
+            } else if (old > v) {
+                for (let i = 0; i < old - v; i++) {
+                this.segments.pop()
+                this.segment_options.pop()
+                }
+            }
+            this.n_segments = v;
         },
 
         increment_segments() {
@@ -169,15 +193,33 @@ export default {
 
         windowPrev() {
             this.onboarding = this.onboarding - 1 < 0 ? this.n_segments - 1 : this.onboarding - 1;
+        },
+    },
+    computed: {
+        swatchStyle() {
+            const color = this.segments[this.onboarding].color;
+            const menu = this.segment_options[this.onboarding].color_menu;
+            return {
+                backgroundColor: color,
+                cursor: 'pointer',
+                height: '30px',
+                width: '30px',
+                borderRadius: menu ? '50%' : '4px',
+                transition: 'border-radius 200ms ease-in-out'
+            }
+        }
+    },  
+    mounted() {
+        this.n_segments = _.clone(this.inverseKinematics.n_segments)
+        this.segments = _.cloneDeep(this.inverseKinematics.segments)
+        for (const segment of this.segments) {
+            this.segment_options[segment.id] = createDefaultSegmentOptions()
         }
     },
     setup() {
         const inverseKinematics = useInverseKinematicsStore();
-        const { n_segments, segments } = storeToRefs(inverseKinematics);
         return {
-            inverseKinematics,
-            n_segments,
-            segments,
+            inverseKinematics
         };
     }
 }
