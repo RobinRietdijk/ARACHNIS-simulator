@@ -88,13 +88,9 @@
                                                 />
                                                 <v-text-field v-model="segment.color" hide-details class="ma-0 pa-0" solo>
                                                     <template v-slot:append>
-                                                        <div :style="swatchStyle">
+                                                        <div :style="swatchStyle(segment.id)">
                                                             <v-menu activator="parent" v-model="segment_options[segment.id].color_menu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
-                                                                <v-card>
-                                                                    <v-card-text>
-                                                                        <v-color-picker v-model="segment.color" flat />
-                                                                    </v-card-text>
-                                                                </v-card>
+                                                                <v-color-picker v-model="segment.color" flat show-swatches />
                                                             </v-menu>
                                                         </div>
                                                     </template>
@@ -194,11 +190,10 @@ export default {
         windowPrev() {
             this.onboarding = this.onboarding - 1 < 0 ? this.n_segments - 1 : this.onboarding - 1;
         },
-    },
-    computed: {
-        swatchStyle() {
-            const color = this.segments[this.onboarding].color;
-            const menu = this.segment_options[this.onboarding].color_menu;
+
+        swatchStyle(id) {
+            const color = this.segments[id].color;
+            const menu = this.segment_options[id].color_menu;
             return {
                 backgroundColor: color,
                 cursor: 'pointer',
@@ -207,8 +202,8 @@ export default {
                 borderRadius: menu ? '50%' : '4px',
                 transition: 'border-radius 200ms ease-in-out'
             }
-        }
-    },  
+        },
+    },
     mounted() {
         this.n_segments = _.clone(this.inverseKinematics.n_segments)
         this.segments = _.cloneDeep(this.inverseKinematics.segments)
