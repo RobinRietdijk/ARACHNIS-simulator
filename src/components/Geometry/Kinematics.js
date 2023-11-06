@@ -3,7 +3,7 @@ import Linkage from "./Linkage";
 import Segment from "./Segment";
 import Vector3D from "./Vector3D";
 
-class KinematicsPlot {
+class Kinematics {
   constructor(id, n) {
     this.id = id;
     this.n_segments = n;
@@ -124,4 +124,4 @@ class KinematicsPlot {
   }
 }
 
-export default KinematicsPlot
+export default Kinematics

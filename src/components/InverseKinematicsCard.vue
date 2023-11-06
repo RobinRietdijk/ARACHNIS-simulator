@@ -16,9 +16,9 @@
             <v-container class="d-flex flex-column">
                 <v-row class="flex-grow-0">
                     <v-col class="pa-0">
-                        <div class="text-caption pl-4">Number of segments: <span>{{ n_segments }}</span></div>
+                        <div class="text-caption pl-4">Number of segments: <span>{{ kinematics.n_segments }}</span></div>
                         <v-slider 
-                            v-model="n_segments"
+                            v-model="kinematics.n_segments"
                             :min="min_segments"
                             :max="max_segments"
                             :step="1"
@@ -30,7 +30,7 @@
                                     size="small"
                                     variant="text"
                                     icon="mdi-minus"
-                                    :disabled="n_segments <= min_segments"
+                                    :disabled="kinematics.n_segments <= min_segments"
                                     @click="decrement_segments"
                                 ></v-btn>
                                 </template>
@@ -40,7 +40,7 @@
                                     size="small"
                                     variant="text"
                                     icon="mdi-plus"
-                                    :disabled="n_segments >= max_segments"
+                                    :disabled="kinematics.n_segments >= max_segments"
                                     @click="increment_segments"
                                 ></v-btn>
                             </template>
@@ -50,7 +50,7 @@
                 <v-divider />
                 <v-spacer></v-spacer>
                 <v-row class="flex-grow-0 pa-3">
-                    <v-card class="w-100">
+                    <v-card class="w-100" flat :border=true>
                         <v-card-actions class="justify-space-between">
                             <v-btn
                                 :disabled="onboarding < 1"
@@ -75,46 +75,52 @@
                             >
                                 <v-card>
                                     <v-card-text>
-                                        <v-row>
-                                            <v-col class="pa-0">
-                                                <v-slider
-                                                    v-model="segment.len"
-                                                    :min="0"
-                                                    :max="50"
-                                                    :step="1"
-                                                    thumb-label
-                                                    thumb-size="10"
-                                                    show-ticks
-                                                />
-                                                <v-text-field v-model="segment.color" hide-details class="ma-0 pa-0" solo>
-                                                    <template v-slot:append>
-                                                        <div :style="swatchStyle(segment.id)">
-                                                            <v-menu activator="parent" v-model="segment_options[segment.id].color_menu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
-                                                                <v-color-picker v-model="segment.color" flat show-swatches />
-                                                            </v-menu>
+                                        <v-row class="ml-0">
+                                            <v-col>
+                                                <v-row>
+                                                    <div class="h-100 w-100 pt-4">
+                                                        <div class="text-caption">
+                                                            Length: {{ segment.len }}
                                                         </div>
-                                                    </template>
-                                                </v-text-field>
+                                                        <v-slider
+                                                            v-model="segment.len"
+                                                            class="mw-250"
+                                                            :min="0"
+                                                            :max="50"
+                                                            :step="1"
+                                                            thumb-label
+                                                            thumb-size="10"
+                                                        />
+                                                    </div>
+                                                </v-row>
+                                                <v-row>
+                                                    <v-text-field 
+                                                        label="Color"
+                                                        v-model="segment.color" 
+                                                        class="ma-0 pa-0 mw-175" 
+                                                        variant="outlined" 
+                                                        hide-details
+                                                        readonly
+                                                        flat
+                                                    >
+                                                        <template v-slot:append-inner>
+                                                            <div :style="swatchStyle(segment.id)">
+                                                                <v-menu activator="parent" v-model="segment_options[segment.id].color_menu" location="top" offset="-148 15" :close-on-content-click="false">
+                                                                    <div><v-color-picker v-model="segment.color" flat /></div>
+                                                                </v-menu>
+                                                            </div>
+                                                        </template>
+                                                    </v-text-field>
+                                                </v-row>
                                             </v-col>
                                             <v-col>
-                                                <round-slider 
-                                                    ref="rslider"
-                                                    v-model="segment.range"
-                                                    sliderType="range"
-                                                    min="0"
-                                                    max="360"
-                                                    step="1"
-                                                    radius="75"
-                                                    width="8"
-                                                    handleSize="24"
-                                                    borderWidth="0"
-                                                    lineCap="round"
-                                                    :rangeColor="$vuetify.theme.current.colors.primary"
-                                                />
+                                                <v-row>
+                                                    <div class="rs-container"><v-range-slider /></div>
+                                                </v-row>
                                             </v-col>
                                         </v-row>
                                     </v-card-text>
-                                    <v-card-actions>
+                                    <v-card-actions class="px-4">
                                         <v-btn size="small" :color="segment.axis.name === 'x' ? 'primary' : undefined" :active="segment.axis.name === 'x'" variant="text" icon="mdi-axis-x-arrow" @click="setAxis(segment.id, 'x')"/>
                                         <v-btn size="small" :color="segment.axis.name === 'y' ? 'primary' : undefined" :active="segment.axis.name === 'y'" variant="text" icon="mdi-axis-y-arrow" @click="setAxis(segment.id, 'y')"/>
                                         <v-btn size="small" :color="segment.axis.name === 'z' ? 'primary' : undefined" :active="segment.axis.name === 'z'" variant="text" icon="mdi-axis-z-arrow" @click="setAxis(segment.id, 'z')"/>
@@ -132,13 +138,16 @@
 <script>
 import { useInverseKinematicsStore } from '@/store/inverseKinematics';
 import { createDefaultSegment, createDefaultSegmentOptions } from '@/components/Geometry/defaultSegment'
-import RoundSlider from 'vue-three-round-slider'
-import Axis from '@/components/Geometry/Axis';
-import _ from 'lodash';
+import { storeToRefs } from 'pinia';
+import Axis from '@/components/Geometry/Axis'
 
 export default {
-    components: {
-        RoundSlider,
+    setup() {
+        const inverseKinematics = useInverseKinematicsStore();
+        const { kinematics } = storeToRefs(inverseKinematics)
+        return {
+            kinematics
+        };
     },
     data: () => ({
         onboarding: 0,
@@ -148,6 +157,13 @@ export default {
         segments: [],
         segment_options: []
     }),
+    mounted() {
+        this.n_segments = this.kinematics.n_segments
+        this.segments = this.kinematics.linkage
+        for (const segment of this.segments) {
+            this.segment_options[segment.id] = createDefaultSegmentOptions()
+        }
+    },
     methods: {
         updateSegments(v) {
             const old = this.segments.length;
@@ -158,29 +174,25 @@ export default {
                 }
             } else if (old > v) {
                 for (let i = 0; i < old - v; i++) {
-                this.segments.pop()
-                this.segment_options.pop()
+                    this.segments.pop()
+                    this.segment_options.pop()
                 }
             }
-            this.n_segments = v;
+            this.kinematics.n_segments = v;
         },
 
         increment_segments() {
-            this.n_segments++;
-            this.updateSegments(this.n_segments);
+            this.kinematics.n_segments++;
+            this.updateSegments(this.kinematics.n_segments);
         },
 
         decrement_segments() {
-            this.n_segments--;
-            this.updateSegments(this.n_segments);
+            this.kinematics.n_segments--;
+            this.updateSegments(this.kinematics.n_segments);
         },
 
         setAxis(i, a) {
             this.segments[i].axis = new Axis(a);
-        },
-
-        setRange(s) {
-            console.log(s);
         },
 
         windowNext() {
@@ -204,19 +216,6 @@ export default {
             }
         },
     },
-    mounted() {
-        this.n_segments = _.clone(this.inverseKinematics.n_segments)
-        this.segments = _.cloneDeep(this.inverseKinematics.segments)
-        for (const segment of this.segments) {
-            this.segment_options[segment.id] = createDefaultSegmentOptions()
-        }
-    },
-    setup() {
-        const inverseKinematics = useInverseKinematicsStore();
-        return {
-            inverseKinematics
-        };
-    }
 }
 </script>
 
@@ -234,5 +233,17 @@ export default {
 }
 .h-500 {
     height: 500px;
+}
+
+.mw-175 {
+    max-width: 175px;
+}
+
+.mw-250 {
+    max-width: 250px;
+}
+
+.mb--56 {
+    margin-bottom: -56px;
 }
 </style>

@@ -9,7 +9,7 @@ import { useInverseKinematicsStore } from "@/store/inverseKinematics";
 import { useForwardKinematicsStore } from "@/store/forwardKinematics";
 import { useLegPatternsStore } from "@/store/legPatterns";
 import { useWalkingGaitsStore } from "@/store/walkingGaits";
-import KinematicsPlot from "@/components/Geometry/KinematicsPlot"
+import KinematicsPlot from "@/components/Geometry/Kinematics"
 
 export default {
   components: {
@@ -26,10 +26,10 @@ export default {
       handler: 'updatePlot',
       deep: true,
     },
-    'inverseKinematics': {
-      handler: 'updatePlot',
-      deep: true,
-    }
+    // 'inverseKinematics': {
+    //   handler: 'updatePlot',
+    //   deep: true,
+    // }
   },  
   mounted() {
     this.updatePlot()
@@ -55,26 +55,26 @@ export default {
     plots[inverseKinematicsPlot.id] = inverseKinematicsPlot;
     plots[forwardKinematicsPlot.id] = forwardKinematicsPlot;
 
-    inverseKinematics.$subscribe((mutation, state) => {
-      const target = mutation.events.target.id
-      switch (mutation.events.key) {
-        case "axis":
-          inverseKinematicsPlot.setSegmentAxis(target, state.segments[target].axis);
-          break;
-        case "len":
-          inverseKinematicsPlot.setSegmentLength(target, state.segments[target].len);
-          break;
-        case "range":
-          inverseKinematicsPlot.setSegmentMinAngle(target, state.segments[target].range[0]);
-          inverseKinematicsPlot.setSegmentMaxAngle(target, state.segments[target].range[1]);
-          break;
-        case "color":
-          inverseKinematicsPlot.setSegmentColor(target, state.segments[target].color);
-          break;
-        default:
-          break;
-      }
-    });
+    // inverseKinematics.$subscribe((mutation, state) => {
+    //   const target = mutation.events.target.id
+    //   switch (mutation.events.key) {
+    //     case "axis":
+    //       inverseKinematicsPlot.setSegmentAxis(target, state.segments[target].axis);
+    //       break;
+    //     case "len":
+    //       inverseKinematicsPlot.setSegmentLength(target, state.segments[target].len);
+    //       break;
+    //     case "range":
+    //       inverseKinematicsPlot.setSegmentMinAngle(target, state.segments[target].range[0]);
+    //       inverseKinematicsPlot.setSegmentMaxAngle(target, state.segments[target].range[1]);
+    //       break;
+    //     case "color":
+    //       inverseKinematicsPlot.setSegmentColor(target, state.segments[target].color);
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    // });
     inverseKinematics.$onAction(
       ({
         name,
