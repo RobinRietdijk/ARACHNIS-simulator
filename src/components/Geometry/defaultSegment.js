@@ -1,7 +1,7 @@
 import Axis from "./Axis";
 
 const defaultSegment = {
-    len: 10,
+    length: 10,
     axis: new Axis('x'),
     range: [0, 180],
     color: "#DD7805"

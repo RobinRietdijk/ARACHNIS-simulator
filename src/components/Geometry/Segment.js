@@ -1,7 +1,7 @@
 import Quaternion from "./Quaternion";
 import { defaultSegment } from "./defaultSegment";
 class Segment {
-    constructor(id, origin, axis, length, range=defaultSegment.range, color=defaultSegment.color) {
+    constructor(id, origin, axis=defaultSegment.axis, length=defaultSegment.length, range=defaultSegment.range, color=defaultSegment.color) {
         this.id = id;
         this.origin = origin;
         this.axis = axis.normalize();

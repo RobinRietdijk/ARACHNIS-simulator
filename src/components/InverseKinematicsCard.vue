@@ -16,9 +16,9 @@
             <v-container class="d-flex flex-column">
                 <v-row class="flex-grow-0">
                     <v-col class="pa-0">
-                        <div class="text-caption pl-4">Number of segments: <span>{{ kinematics.n_segments }}</span></div>
+                        <div class="text-caption pl-4">Number of segments: <span>{{ n_segments }}</span></div>
                         <v-slider 
-                            v-model="kinematics.n_segments"
+                            v-model="n_segments"
                             :min="min_segments"
                             :max="max_segments"
                             :step="1"
@@ -30,7 +30,7 @@
                                     size="small"
                                     variant="text"
                                     icon="mdi-minus"
-                                    :disabled="kinematics.n_segments <= min_segments"
+                                    :disabled="n_segments <= min_segments"
                                     @click="decrement_segments"
                                 ></v-btn>
                                 </template>
@@ -40,7 +40,7 @@
                                     size="small"
                                     variant="text"
                                     icon="mdi-plus"
-                                    :disabled="kinematics.n_segments >= max_segments"
+                                    :disabled="n_segments >= max_segments"
                                     @click="increment_segments"
                                 ></v-btn>
                             </template>
@@ -76,28 +76,29 @@
                                 <v-card>
                                     <v-card-text>
                                         <v-row class="ml-0">
-                                            <v-col>
+                                            <v-col
+                                                cols="5"
+                                            >
                                                 <v-row>
-                                                    <div class="h-100 w-100 pt-4">
+                                                    <v-col class="pa-0">
                                                         <div class="text-caption">
-                                                            Length: {{ segment.len }}
+                                                            Length: {{ segment.length }}
                                                         </div>
                                                         <v-slider
-                                                            v-model="segment.len"
-                                                            class="mw-250"
+                                                            v-model="segment.length"
+                                                            class="mw-200 ml-0"
                                                             :min="0"
                                                             :max="50"
                                                             :step="1"
-                                                            thumb-label
                                                             thumb-size="10"
                                                         />
-                                                    </div>
+                                                    </v-col>
                                                 </v-row>
                                                 <v-row>
                                                     <v-text-field 
                                                         label="Color"
                                                         v-model="segment.color" 
-                                                        class="ma-0 pa-0 mw-175" 
+                                                        class="ma-0 pa-0 mw-200" 
                                                         variant="outlined" 
                                                         hide-details
                                                         readonly
@@ -113,9 +114,37 @@
                                                     </v-text-field>
                                                 </v-row>
                                             </v-col>
-                                            <v-col>
+                                            <v-col align-self="end" class="pb-0">
+                                                <v-row justify="end">
+                                                    <v-col class="flex-grow-0">
+                                                        <v-progress-circular
+                                                            class="angle-circle"
+                                                            color="secondary"
+                                                            size="80"
+                                                            width="10"
+                                                            :rotate="segment.range[0]"
+                                                            :model-value="(segment.range[1] - segment.range[0]) / 360 * 100"
+                                                        >
+                                                            &#8736;{{ segment.range[1] - segment.range[0] }} 
+                                                        </v-progress-circular>
+                                                    </v-col>
+                                                </v-row>
                                                 <v-row>
-                                                    <div class="rs-container"><v-range-slider /></div>
+                                                    <v-col>
+                                                        <div class="text-caption">
+                                                            Angle range: {{ segment.range[0] }}&#176; - {{ segment.range[1] }}&#176;
+                                                        </div>
+                                                        <v-range-slider
+                                                            v-model="segment.range"
+                                                            class="ml-0"
+                                                            :min="0"
+                                                            :max="360"
+                                                            :step="5"
+                                                            thumb-size="10"
+                                                            strict
+                                                            hide-details
+                                                        /> 
+                                                    </v-col>
                                                 </v-row>
                                             </v-col>
                                         </v-row>
@@ -139,6 +168,7 @@
 import { useInverseKinematicsStore } from '@/store/inverseKinematics';
 import { createDefaultSegment, createDefaultSegmentOptions } from '@/components/Geometry/defaultSegment'
 import { storeToRefs } from 'pinia';
+import _ from 'lodash';
 import Axis from '@/components/Geometry/Axis'
 
 export default {
@@ -158,8 +188,8 @@ export default {
         segment_options: []
     }),
     mounted() {
-        this.n_segments = this.kinematics.n_segments
-        this.segments = this.kinematics.linkage
+        this.n_segments = _.cloneDeep(this.kinematics.n_segments);
+        this.segments = _.cloneDeep(this.kinematics.linkage)
         for (const segment of this.segments) {
             this.segment_options[segment.id] = createDefaultSegmentOptions()
         }
@@ -178,17 +208,17 @@ export default {
                     this.segment_options.pop()
                 }
             }
-            this.kinematics.n_segments = v;
+            this.n_segments = v;
         },
 
         increment_segments() {
-            this.kinematics.n_segments++;
-            this.updateSegments(this.kinematics.n_segments);
+            this.n_segments++;
+            this.updateSegments(this.n_segments);
         },
 
         decrement_segments() {
-            this.kinematics.n_segments--;
-            this.updateSegments(this.kinematics.n_segments);
+            this.n_segments--;
+            this.updateSegments(this.n_segments);
         },
 
         setAxis(i, a) {
@@ -224,26 +254,11 @@ export default {
     flex: 0 0 1px;
 }
 
-.slider-caption {
-    opacity: 0.7;
+.mw-200 {
+    max-width: 200px;
 }
 
-.overflow-y-scroll {
-    overflow-y: scroll;
-}
-.h-500 {
-    height: 500px;
-}
-
-.mw-175 {
-    max-width: 175px;
-}
-
-.mw-250 {
-    max-width: 250px;
-}
-
-.mb--56 {
-    margin-bottom: -56px;
+.angle-circle {
+    margin: 0 1rem -3em 0;
 }
 </style>
